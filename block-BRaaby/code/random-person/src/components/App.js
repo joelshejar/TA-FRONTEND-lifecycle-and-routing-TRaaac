@@ -5,25 +5,126 @@ class App extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            data:''
+            data:'',
+            hovered:"" 
         }
     }
     componentDidMount(){
-        fetch(`https://randomuser.me/api/`)
+        fetch("https://randomuser.me/api/")
             .then((res)=>res.json())
-            .then((data)=>console.log(data))
             .then((data)=>this.setState({data}))
     }
-    render(){
-        if(!this.state.data){
-            return <Loader/>
+    display = () => {
+        let value = this.state.hovered;
+        let data = this.state.data;
+        switch(value) {
+            case "": 
+                return (
+                   <>
+                         <h2 className="text-xl">My Name is</h2>
+                        <h4 className="text-3xl p-2 font-bold">{data.results[0].name.first + " " + data.results[0].name.last}</h4>
+                   </>
+                )
+                break;
+            case "mail": 
+                return (
+                   <>
+                         <h2 className="text-xl">My Email is</h2>
+                        <h4 className="text-3xl p-2 font-bold">{data.results[0].email}</h4>
+                   </>
+                )
+                break;
+            case "phone": 
+                return (
+                   <>
+                         <h2 className="text-xl">My Phone Number is</h2>
+                        <h4 className="text-3xl p-2 font-bold">{data.results[0].phone}</h4>
+                   </>
+                )
+                break;
+            case "street": 
+                return (
+                   <>
+                         <h2 className="text-xl">My Street is</h2>
+                        <h4 className="text-3xl p-2 font-bold">{data.results[0].location.street.number + " " + data.results[0].location.street.name}</h4>
+                   </>
+                )
+                break;
+            case "city": 
+                return (
+                   <>
+                         <h2 className="text-xl">My City is</h2>
+                        <h4 className="text-3xl p-2 font-bold">{data.results[0].location.city}</h4>
+                   </>
+                )
+                break;
+            default: 
+                break;
         }
-        return(
-            <div>
-                {this.state.data.results[0].gender}
-            </div>
+    }
+    render() {
+       let data = this.state.data;
+       console.log(data);
+       if(!data) {
+           return < Loader />
+       }
+        return (
+            
+            <main className="h-screen flex justify-center items-center">
+                <section className="rounded-lg bg-white w-1/2 shadow-custom">
+                   <div className="bg-blue-200 p-4">
+                       <img src={data ? data.results[0].picture.large: "/img1.png"} className="w-40 h-40 object-cover rounded-full block mx-auto relative top-16"/> 
+                   </div>
+                   <div className="mt-20 text-center pb-8">
+                      {
+                          this.display()
+                      } 
+                        <div className="flex px-8 mt-12">
+
+                             <div className="flex-20">
+                                <i className="text-2xl text-center fas fa-envelope-open" onMouseOver={
+                                    () => this.setState({hovered: "mail"})
+                                }></i>
+                             </div>
+                             <div class="flex-20">
+                                <i className="text-2xl text-center fas fa-phone-alt" onMouseOver={
+                                    () => this.setState({hovered: "phone"})
+                                }></i>
+                             </div>
+                            <div className="flex-20">
+                                <i className="text-2xl text-center fas fa-street-view" onMouseOver={
+                                    () => this.setState({hovered: "street"})
+                                }></i>
+                            </div>
+                            <div className="flex-20">
+                                <i className="text-2xl text-center fas fa-city" onMouseOver={
+                                    () => this.setState({hovered: "city"})
+                                }></i>
+                            </div>
+                           
+                        </div>
+                        <button className="bg-blue-500 px-4 py-2 text-white mt-8 rounded-md" onClick={this.componentDidMount}
+                        >{data ? "Random User": "Loading..."}</button>
+                   </div>
+                </section>
+            </main>
         )
     }
+    // render(){
+    //     // if(!this.state.data){
+    //     //     return <Loader/>
+    //     // }
+    //     let data = this.state.data
+    //     console.dir(this.state.data.results)
+    //     return(
+    //         <>
+    //         <div>
+                
+    //         </div>
+    //         <div><h2>{data.results[0].phone}</h2></div>
+    //         </>
+    //     )
+    // }
 }
 
 export default App
